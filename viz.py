@@ -4,6 +4,7 @@ import plotly
 from plotly.graph_objs import Scatter
 from trueskill import Rating, rate
 
+
 class Game:
 
     def __init__(self, json_object):
@@ -65,6 +66,26 @@ def do_game(game):
         players[game.users[i].user_name].record_match(game.timestamp, rated_list[i][game.users[i].user_name])
 
 
+def plot_players(player_list):
+    mu_data = {}
+    timestamp_data = {}
+    for p in player_list:
+        player_mu_data = []
+        player_time_data = []
+        for r_data in players[p].rating_data:
+            player_mu_data.append(r_data.mu)
+            player_time_data.append(r_data.timestamp)
+        mu_data[p] = player_mu_data
+        timestamp_data[p] = player_time_data
+
+    traces = []
+    for p in player_list:
+        trace = Scatter(x=timestamp_data[p], y=mu_data[p], mode="lines", name=p)
+        traces.append(trace)
+
+    plotly.plotly.plot(traces)
+
+
 games = []
 # To pull data:
 # wget "https://halite.io/api/web/game?previousID=2331401&limit=100000" -O games.json --no-check-certificate
@@ -74,7 +95,7 @@ games.extend(json.load(open(directory + "data/games-2331402-2359106.json")))
 games.extend(json.load(open(directory + "data/games-2359107-2362974.json")))
 games.extend(json.load(open(directory + "data/games-2362975-2374581.json")))
 games.extend(json.load(open(directory + "data/games-2374582-2384577.json")))
-games.extend(json.load(open(directory + "data/games-2384578-2399386.json")))
+games.extend(json.load(open(directory + "data/games-2384578-2399468.json")))
 
 gamelist = []
 for g in games:
@@ -93,9 +114,6 @@ for g in gamelist:
     do_game(g)
 
 player_name = "shummie"
-mu_data = []
-for r_data in players[player_name].rating_data:
-    mu_data.append(r_data.mu)
 
-trace0 = Scatter(x=list(range(len(mu_data))), y=mu_data, mode="lines", name="lines")
-plotly.offline.plot([trace0], filename="line.html")
+plot_players(["mzotkiew", "erdman", "shummie", "timfoden", "cdurbin", "nmalaguti", "PeppiKokki", "DexGroves", "ewirkerman", "moonbirth"])
+plot_players(["KalraA v91", "KalraA v92"])
