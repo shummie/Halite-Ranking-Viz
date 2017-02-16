@@ -4,6 +4,8 @@ import plotly
 from plotly.graph_objs import Scatter
 from trueskill import Rating, rate, setup, TAU
 
+REMOVE_ERRORS = False
+
 
 class Game:
 
@@ -17,7 +19,8 @@ class Game:
         self.has_error = False
         for u in range(len(json_object["users"])):
             self.users.append(GameUserInfo(json_object["users"][u]))
-            if self.error_log is not None:
+        for u in self.users:
+            if u.error_log is not None:
                 self.has_error = True
 
 
@@ -107,7 +110,10 @@ for g in games:
 # Just in case gamelist isn't sorted
 gamelist.sort(key=lambda x: x.id)
 
-setup(tau=TAU / 2)
+if REMOVE_ERRORS:
+    gamelist = [x for x in gamelist if x.has_error is False]
+
+# setup(tau=TAU / 2)
 
 players = {}
 game_count = 0
