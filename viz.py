@@ -2,7 +2,7 @@ from collections import namedtuple
 import json
 import plotly
 from plotly.graph_objs import Scatter
-from trueskill import Rating, rate
+from trueskill import Rating, rate, setup, TAU
 
 
 class Game:
@@ -14,8 +14,6 @@ class Game:
         self.name = json_object["replayName"]
         self.timestamp = json_object["timestamp"]
         self.users = []
-        for u in range(len(json_object["users"])):
-            self.users.append(GameUserInfo(json_object["users"][u]))
 
 
 class GameUserInfo:
@@ -104,8 +102,9 @@ for g in games:
 # Just in case gamelist isn't sorted
 gamelist.sort(key=lambda x: x.id)
 
-players = {}
+setup(tau=TAU / 2)
 
+players = {}
 game_count = 0
 for g in gamelist:
     game_count += 1
@@ -113,7 +112,8 @@ for g in gamelist:
         print(game_count)
     do_game(g)
 
-player_name = "shummie"
 
 plot_players(["mzotkiew", "erdman", "shummie", "timfoden", "cdurbin", "nmalaguti", "PeppiKokki", "DexGroves", "ewirkerman", "moonbirth"])
 plot_players(["KalraA v91", "KalraA v92"])
+
+plot_players(["mzotkiew", "erdman", "shummie", "timfoden", "cdurbin", "nmalaguti", "PeppiKokki", "DexGroves", "ewirkerman", "moonbirth", "MoreGames", "KalraA v92", "veden", "acouette", "jstaker7", "tondonia", "Ziemin", "fohristiwhirl", "Maximophone", "tmseiler"])
