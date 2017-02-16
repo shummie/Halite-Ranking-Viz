@@ -14,6 +14,11 @@ class Game:
         self.name = json_object["replayName"]
         self.timestamp = json_object["timestamp"]
         self.users = []
+        self.has_error = False
+        for u in range(len(json_object["users"])):
+            self.users.append(GameUserInfo(json_object["users"][u]))
+            if self.error_log is not None:
+                self.has_error = True
 
 
 class GameUserInfo:
